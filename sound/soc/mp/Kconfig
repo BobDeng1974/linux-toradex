@@ -1,7 +1,7 @@
 menu "Musica Pristina Audio Aupport"
-	depends on COMPILE_TEST
+	depends on OF && I2C
 
-config SND_MP_CODEC
+config SND_SOC_MP_CODEC
 	tristate "Musica Pristina Codec Support"
 	select SND_SOC_GENERIC_DMAENGINE_PCM
 	select REGMAP_MMIO
@@ -9,7 +9,7 @@ config SND_MP_CODEC
 	  Select Y or M to add support for the Codec embedded in the Musica 
 	  Pristina and affiliated SoCs.
 
-config SND_MP_I2S
+config SND_SOC_MP_I2S
 	tristate "Musica Pristina I2S Support"
 	select SND_SOC_GENERIC_DMAENGINE_PCM
 	select REGMAP_MMIO
