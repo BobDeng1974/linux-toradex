@@ -48,9 +48,59 @@
 	model = "Toradex Colibri iMX7D on Colibri Evaluation Board V3";
 	compatible = "toradex,colibri-imx7d-eval-v3", "toradex,colibri-imx7d",
 		     "fsl,imx7d";
+
+	sound_mp {
+		compatible = "simple-audio-card";
+		simple-audio-card,name = "imx7-mp";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,bitclock-master = <&mp_master>;
+		simple-audio-card,frame-master = <&mp_master>;
+		simple-audio-card,cpu {
+			sound-dai = <&sai2>;
+		};
+
+		mp_master: simple-audio-card,codec {
+			sound-dai = <&codec_mp>;
+		};
+	};
 };
 
 &usbotg2 {
 	vbus-supply = <&reg_usbh_vbus>;
 	status = "okay";
+};
+
+&i2c4 {
+	status = "okay";
+	codec_mp: mp_codec@01 {
+		compatible = "mp,codec-i2s";
+		#sound-dai-cells = <0>;
+		reg = <0x01>;
+	};
+};
+
+&sai2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_sai2>;
+	status = "okay";
+};
+
+/* Disable uart1 since its pins overlap with sai2 pins. */
+&uart1 {
+	status = "disabled";
+};
+
+/* Disable uart2 since its pins overlap with sai2 pins. */
+&uart2 {
+	status = "disabled";
+};
+
+&iomuxc {
+	pinctrl_sai2: sai2-grp {
+		fsl,pins = <
+			MX7D_PAD_SAI2_TX_BCLK__SAI2_TX_BCLK		0x1f
+			MX7D_PAD_SAI2_TX_SYNC__SAI2_TX_SYNC		0x1f
+			MX7D_PAD_SAI2_TX_DATA__SAI2_TX_DATA0	0x30
+		>;
+	};
 };
