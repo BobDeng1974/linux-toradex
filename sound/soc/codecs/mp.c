@@ -252,8 +252,9 @@ static int mp_i2c_probe(struct i2c_client *client,
 
 	mp->regmap = devm_regmap_init_i2c(client, &mp_codec_regmap);
 	if (IS_ERR(mp->regmap)) {
+		ret = PTR_ERR(mp->regmap);
 		dev_err(&client->dev, "Failed to allocate regmap: %d\n", ret);
-		return PTR_ERR(mp->regmap);
+		return ret;
 	}
 
 	ret = snd_soc_register_codec(&client->dev, &mp_codec_driver, &mp_dai, 1);
