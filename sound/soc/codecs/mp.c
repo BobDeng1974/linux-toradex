@@ -166,6 +166,29 @@ static int mp_pcm_hw_params(struct snd_pcm_substream *substream,
 	return 0;
 }
 
+static int mp_dai_trigger(struct snd_pcm_substream *substream, int cmd,
+				struct snd_soc_dai *dai)
+{
+	struct snd_soc_codec *codec = dai->codec;
+
+	switch (cmd) {
+	case SNDRV_PCM_TRIGGER_START:
+	case SNDRV_PCM_TRIGGER_RESUME:
+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+		dev_dbg(codec->dev, "Starting audio stream\n");
+		break;
+	case SNDRV_PCM_TRIGGER_STOP:
+	case SNDRV_PCM_TRIGGER_SUSPEND:
+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+		dev_dbg(codec->dev, "Stopping audio stream\n");
+		break;
+	default:
+		break;
+	}
+
+	return 0;
+}
+
 static const unsigned int mp_rates[] = {
 	44100, 48000, 64000, 88200, 96000, 176400, 192000, 352800, 384000,
 	705600, 768000,
@@ -193,6 +216,7 @@ static const struct snd_soc_dai_ops mp_codec_ops = {
 	.startup = mp_codec_startup,
 	.hw_params = mp_pcm_hw_params,
 	.set_fmt = mp_set_dai_fmt,
+	.trigger = mp_dai_trigger,
 };
 
 static struct snd_soc_dai_driver mp_dai = {
